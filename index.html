@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Youth Corner Order</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 30px auto; padding: 20px; }
+    input, textarea, select, button { width: 100%; padding: 10px; margin-bottom: 15px; font-size: 16px; }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #0056b3; }
+  </style>
+</head>
+<body>
+
+  <h1>Youth Corner Order Form</h1>
+
+  <form id="orderForm">
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="tel" name="phone" placeholder="Bangladeshi Phone (e.g. 017xxxxxxxx)" pattern="^(01)[3-9][0-9]{8}$" required />
+    <input type="text" name="district" placeholder="District" required />
+    <input type="text" name="postalCode" placeholder="Postal Code" required />
+    <textarea name="address" placeholder="Full Address" required></textarea>
+    <button type="submit">Place Order</button>
+  </form>
+
+  <script>
+    emailjs.init("YCazbnQ4UmxG97v58"); // Your EmailJS public key
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      if (!confirm("Please check your product before the delivery man leaves. No action will be taken after delivery.")) {
+        return;
+      }
+
+      const form = e.target;
+      const orderId = "YC" + Date.now().toString().slice(-6);
+
+      // Prepare data object for EmailJS
+      const orderData = {
+        orderId: orderId,
+        name: form.name.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        district: form.district.value,
+        postalCode: form.postalCode.value,
+        address: form.address.value
+      };
+
+      emailjs.send('service_o4dqtmw', 'template_ndjdu5k', orderData)
+        .then(() => {
+          alert("Order placed successfully! Your Order ID is " + orderId);
+          form.reset();
+        }, (error) => {
+          console.error('FAILED...', error);
+          alert("Failed to place order. Please try again later.");
+        });
+    });
+  </script>
+
+</body>
+</html>
